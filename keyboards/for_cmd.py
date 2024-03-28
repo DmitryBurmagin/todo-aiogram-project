@@ -1,14 +1,19 @@
 from aiogram import types
 from aiogram.types import ReplyKeyboardMarkup
-from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 
-def start() -> ReplyKeyboardMarkup:
-    kb = ReplyKeyboardBuilder()
-    kb.button(text="Добавить задачу")
-    kb.button(text="Показать список задач")
-    kb.adjust(2)
-    return kb.as_markup(resize_keyboard=True)
+def start_kb() -> ReplyKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    builder.add(types.InlineKeyboardButton(
+        text='Добавить задачу',
+        callback_data='add_task')
+                )
+    builder.add(types.InlineKeyboardButton(
+        text='Показать список задач',
+        callback_data='task_list')
+                )
+    return builder.as_markup()
 
 
 def add_task() -> InlineKeyboardBuilder:
@@ -32,6 +37,10 @@ def task_list_kb() -> ReplyKeyboardMarkup:
 def show_task_kb(task_id: int) -> ReplyKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     builder.add(types.InlineKeyboardButton(
+        text="Выполнено",
+        callback_data=f"complite {task_id}")
+    )
+    builder.add(types.InlineKeyboardButton(
         text="Удалить",
         callback_data=f"drop_task {task_id}")
     )
@@ -41,11 +50,24 @@ def show_task_kb(task_id: int) -> ReplyKeyboardMarkup:
 def create_task_kb(task_id: int) -> ReplyKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     builder.add(types.InlineKeyboardButton(
-        text='Отметить выполненой',
+        text='Выполнено',
         callback_data=f'complite {task_id}')
         )
     builder.add(types.InlineKeyboardButton(
-        text='Удалить запись',
+        text='Изменить',
+        callback_data=f'update {task_id}')
+        )
+    builder.add(types.InlineKeyboardButton(
+        text='Удалить',
         callback_data=f'drop_task {task_id}')
         )
+    builder.add(types.InlineKeyboardButton(
+        text='Добавить новую задачу',
+        callback_data='add_task')
+        )
+    builder.add(types.InlineKeyboardButton(
+        text='Список задач',
+        callback_data='task_list')
+        )
+    builder.adjust(3)
     return builder.as_markup()

@@ -1,4 +1,4 @@
-from sqlalchemy import insert, select, delete
+from sqlalchemy import insert, select, delete, update
 from contextlib import asynccontextmanager
 
 from .db import Task, User, async_session
@@ -37,6 +37,13 @@ async def create_task(task_text: str, telegram_id: int):
         )
         result = await session.execute(stmt)
         return result.inserted_primary_key[0]
+
+
+async def update_task_sv(task_id: int, new_data: str):
+    async with session_manager.get_session() as session:
+        stmt = update(Task).where(Task.id == task_id).values(todo=new_data)
+        await session.execute(stmt)
+        return task_id
 
 
 async def delete_task(task_id: int):
